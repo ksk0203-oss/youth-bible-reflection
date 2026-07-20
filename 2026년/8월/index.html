@@ -2,62 +2,387 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>2026년 8월 · Youth Bible Reflection</title>
+
+<link rel="manifest" href="../../manifest.json">
+<meta name="theme-color" content="#7C5CFF">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="청소년 묵상">
+<meta name="mobile-web-app-capable" content="yes">
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap');
+
 :root {
+  --fs-scale: 1;
   --purple: #7C5CFF; --pink: #FF6B9D; --orange: #FFB648; --yellow: #FFE45E;
   --mint: #4ECDC4; --dark: #2D2A4A; --bg: #F7F5FF; --white: #FFFFFF;
+  --gray: #8A87A6; --border: #E8E6F5;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background: var(--bg); font-family: 'Noto Sans KR', sans-serif; color: var(--dark); padding: 24px 16px; }
+body {
+  background: var(--bg); font-family: 'Noto Sans KR', sans-serif; color: var(--dark);
+  padding: 20px 16px; padding-top: max(52px, env(safe-area-inset-top) + 12px);
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+}
 .wrap { max-width: 640px; margin: 0 auto; }
-.back-link { display:inline-block; margin-bottom: 16px; font-size: 14px; font-weight: 800; color: var(--purple); text-decoration: none; }
+
+/* 글씨 크기 조절 */
+.fs-control { display:flex; align-items:center; justify-content:flex-end; gap:6px; margin-bottom:12px; }
+.fs-label { font-size:12px; color: var(--gray); margin-right:4px; font-weight:700; }
+.fs-btn {
+  font-family: inherit; background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--gray); cursor: pointer; width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center; font-weight:700;
+}
+.fs-btn:nth-child(2) { font-size: 12px; }
+.fs-btn:nth-child(3) { font-size: 15px; }
+.fs-btn:nth-child(4) { font-size: 18px; }
+.fs-btn:nth-child(5) { font-size: 21px; }
+.fs-btn.fs-active { background: linear-gradient(135deg, var(--purple), var(--pink)); color: var(--white); border-color: transparent; }
+
+/* 맨 위로 버튼 */
+.scroll-top-btn {
+  position: fixed; right: 18px; bottom: max(18px, env(safe-area-inset-bottom) + 10px);
+  width: 46px; height: 46px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--pink)); color: var(--white);
+  border: none; font-size: 18px; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+  box-shadow: 0 6px 16px rgba(124,92,255,0.35); z-index: 999;
+  opacity: 0; transition: opacity 0.2s ease;
+}
+.scroll-top-btn.is-visible { display: flex; opacity: 1; }
+
+/* 히어로 */
 .hero {
   background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 60%, var(--orange) 100%);
-  border-radius: 28px; padding: 36px 28px; position: relative; overflow: hidden; margin-bottom: 20px;
+  border-radius: 28px; padding: 32px 26px; position: relative; overflow: hidden; margin-bottom: 16px;
 }
 .hero::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.15); }
-.hero-badge { display:inline-block; background:rgba(255,255,255,0.25); color:var(--white); font-size:13px; font-weight:800; padding:6px 14px; border-radius:100px; margin-bottom:14px; position:relative; z-index:1; }
-.hero-title { font-size: 32px; font-weight: 900; color: var(--white); line-height:1.25; margin-bottom:8px; position:relative; z-index:1; }
-.hero-sub { font-size: 14px; color: rgba(255,255,255,0.85); font-weight:500; position:relative; z-index:1; }
+.hero::after { content:''; position:absolute; bottom:-60px; left:-30px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.1); }
+.hero-inner { position:relative; z-index:1; }
+.hero-badge {
+  display:inline-block; background:rgba(255,255,255,0.25); color:var(--white);
+  font-size: calc(12px * var(--fs-scale,1)); font-weight:800; padding:6px 14px; border-radius:100px; margin-bottom:12px;
+  letter-spacing: 0.5px;
+}
+.hero-date { font-size: calc(14px * var(--fs-scale,1)); font-weight:800; color:rgba(255,255,255,0.9); letter-spacing:1px; margin-bottom:4px; }
+.hero-title { font-size: calc(28px * var(--fs-scale,1)); font-weight:900; color:var(--white); margin-bottom:14px; }
+.hero-verse {
+  border-top: 1px solid rgba(255,255,255,0.25); padding-top: 16px; margin-top: 16px;
+  font-size: calc(14px * var(--fs-scale,1)); line-height:1.6; color: rgba(255,255,255,0.92);
+}
+.hero-verse-ref { display:block; margin-top:6px; font-size: calc(11.5px * var(--fs-scale,1)); font-weight:800; color: var(--yellow); }
+
+/* 목차 */
+.badge-row { margin-bottom: 8px; }
+.pill-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background: var(--dark); color: var(--white);
+  font-size: calc(12.5px * var(--fs-scale,1)); font-weight:800; padding:8px 14px; border-radius:100px;
+}
 .toc-card { background: var(--white); border-radius: 24px; padding: 8px; box-shadow: 0 8px 24px rgba(124,92,255,0.12); margin-bottom: 16px; }
-.toc-item { display: flex; align-items: center; gap: 14px; padding: 16px 14px; border-radius: 18px; text-decoration:none; color:inherit; }
-.toc-item.disabled { opacity: 0.45; }
-.toc-num { flex: 0 0 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--purple), var(--pink)); color: var(--white); font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+.toc-item {
+  display: flex; align-items: center; gap: 12px; padding: 14px 12px; border-radius: 18px;
+  cursor:pointer; text-decoration:none; color:inherit; width:100%; text-align:left;
+  background:none; border:none; font-family:inherit;
+}
+.toc-item:hover { background: var(--bg); }
+.toc-item.is-disabled { opacity: 0.4; cursor:default; }
+.toc-item.is-disabled:hover { background:none; }
+.toc-num {
+  flex: 0 0 40px; height: 40px; border-radius: 13px;
+  background: linear-gradient(135deg, var(--purple), var(--pink)); color: var(--white);
+  font-weight: 800; font-size: calc(14px * var(--fs-scale,1));
+  display: flex; align-items: center; justify-content: center;
+}
 .toc-num.gray { background: #D8D5EE; }
-.toc-info { flex: 1; }
-.toc-ref { font-weight: 800; font-size: 14px; color: var(--dark); }
-.toc-theme { font-size: 12.5px; color: #8A87A6; margin-top: 2px; }
-.toc-go { width: 32px; height: 32px; border-radius: 50%; background: var(--yellow); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: var(--dark); flex-shrink:0; }
-.footer-note { text-align: center; padding: 20px; font-size: 12px; color: #A8A5C4; }
+.toc-info { flex: 1; min-width:0; }
+.toc-ref { font-weight: 800; font-size: calc(13.5px * var(--fs-scale,1)); color: var(--dark); }
+.toc-dow { font-size: 0.75em; font-weight:600; color: var(--gray); margin-left:3px; }
+.toc-theme { font-size: calc(12px * var(--fs-scale,1)); color: var(--gray); margin-top: 2px; }
+.toc-tag {
+  flex: 0 0 auto; font-size: calc(10.5px * var(--fs-scale,1)); font-weight: 800; color: var(--white);
+  background: var(--purple); padding: 4px 10px; border-radius: 100px;
+}
+.toc-tag.soon { background: #D8D5EE; color: var(--gray); }
+.toc-arrow { flex: 0 0 auto; color: var(--purple); font-size: calc(16px * var(--fs-scale,1)); font-weight:800; }
+@media (max-width: 480px) {
+  .toc-item { flex-wrap: wrap; row-gap: 6px; }
+  .toc-ref { flex-basis: 100px; }
+  .toc-theme { order: 5; flex: 1 1 100%; margin-top: 2px; padding-left: 52px; }
+}
+
+.footer-links { text-align:center; padding: 16px 0 8px; }
+.footer-links a { color: var(--purple); font-weight:800; font-size:13px; text-decoration:none; }
+.footer-note { text-align: center; padding: 12px; font-size: 12px; color: var(--gray); }
+
+/* 날짜별 화면 */
+#view-day { display:none; }
+.back-link { display:inline-block; margin-bottom: 14px; font-size: calc(13px * var(--fs-scale,1)); font-weight: 800; color: var(--purple); text-decoration: none; background:none; border:none; cursor:pointer; font-family:inherit; padding:0; }
+
+.day-card { background: var(--white); border-radius: 24px; padding: 26px 22px; box-shadow: 0 8px 24px rgba(124,92,255,0.1); }
+.day-header-row { display:flex; align-items:center; gap:10px; margin-bottom: 6px; }
+.day-num-chip {
+  width:32px; height:32px; border-radius:11px; background: linear-gradient(135deg, var(--purple), var(--pink));
+  color:var(--white); font-weight:800; font-size: calc(13px * var(--fs-scale,1)); display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.day-date-label { font-size: calc(12.5px * var(--fs-scale,1)); font-weight:800; color: var(--gray); letter-spacing:0.5px; }
+
+/* 오디오 */
+.audio-row { display:flex; align-items:center; justify-content:flex-end; gap:6px; margin: 10px 0 14px; }
+.audio-play-btn {
+  width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--pink));
+  color: var(--white); border: none; cursor: pointer; display:flex; align-items:center; justify-content:center; font-size:10px;
+}
+.audio-status { font-size: calc(10.5px * var(--fs-scale,1)); font-weight:700; color: var(--gray); margin-right:2px; }
+.audio-speed-group { display:flex; gap:3px; }
+.speed-btn {
+  font-family:inherit; font-size: calc(10px * var(--fs-scale,1)); font-weight:800; color: var(--gray);
+  background: var(--bg); border: 1px solid var(--border); border-radius:100px; padding:3px 8px; cursor:pointer;
+}
+.speed-btn.is-active { background: var(--purple); color: var(--white); border-color: var(--purple); }
+
+.day-title { font-size: calc(21px * var(--fs-scale,1)); font-weight: 900; color: var(--dark); margin-bottom: 16px; }
+
+.scripture-box {
+  background: linear-gradient(135deg, #F3F0FF, #FFF0F5);
+  border-radius: 18px; padding: 20px; margin-bottom: 8px;
+  font-size: calc(15px * var(--fs-scale,1)); line-height: 1.9; color: var(--dark); text-align: justify; word-break: keep-all;
+}
+.scripture-box .vnum { color: var(--purple); font-weight: 900; font-size: calc(11.5px * var(--fs-scale,1)); margin-right: 2px; }
+.scripture-note { font-size: calc(11px * var(--fs-scale,1)); color: var(--gray); text-align:right; margin: 4px 2px 16px; }
+
+.section-block { margin: 18px 0; }
+.chip { display:inline-block; font-size: calc(12px * var(--fs-scale,1)); font-weight: 800; padding: 6px 12px; border-radius: 100px; color: var(--white); margin-bottom: 10px; }
+.chip--med { background: var(--mint); }
+.chip--app { background: var(--orange); }
+.chip--pray { background: var(--pink); }
+.section-text { font-size: calc(14.5px * var(--fs-scale,1)); line-height: 1.8; color: var(--dark); text-align: justify; word-break: keep-all; }
+
+.nav-row { display:flex; justify-content: space-between; margin-top: 20px; padding-top: 14px; border-top: 1px dashed var(--border); font-size: calc(12.5px * var(--fs-scale,1)); font-weight: 800; color: var(--gray); }
+.nav-row a { color: inherit; text-decoration:none; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <a class="back-link" href="../../index.html">&larr; 처음으로</a>
 
-  <div class="hero">
-    <div class="hero-badge">🔥 청소년 5분 말씀 묵상</div>
-    <div class="hero-title">2026년 8월</div>
-    <div class="hero-sub">로마서 파헤치기 · 1장부터 시작!</div>
+<div class="wrap">
+
+  <div class="fs-control" id="fs-control">
+    <span class="fs-label">글씨 크기</span>
+    <button class="fs-btn" data-scale="0.9" onclick="setFontScale(0.9)">가</button>
+    <button class="fs-btn fs-active" data-scale="1" onclick="setFontScale(1)">가</button>
+    <button class="fs-btn" data-scale="1.15" onclick="setFontScale(1.15)">가</button>
+    <button class="fs-btn" data-scale="1.3" onclick="setFontScale(1.3)">가</button>
   </div>
 
-  <div class="toc-card">
-    <a class="toc-item" href="day01.html">
-      <div class="toc-num">01</div>
-      <div class="toc-info"><div class="toc-ref">롬 1:1-7</div><div class="toc-theme">바울이 자기소개 하는 날</div></div>
-      <div class="toc-go">&rsaquo;</div>
-    </a>
-    <div class="toc-item disabled">
-      <div class="toc-num gray">02</div>
-      <div class="toc-info"><div class="toc-ref">롬 1:8-15</div><div class="toc-theme">준비중이에요</div></div>
+  <!-- ===== 표지 + 목차 ===== -->
+  <div id="view-cover">
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-badge">🔥 청소년 5분 말씀 묵상</div>
+        <div class="hero-date">2026년 8월</div>
+        <div class="hero-title">로마서 파헤치기</div>
+        <div class="hero-verse">
+          "주의 말씀은 내 발에 등이요 내 길에 빛이니이다"
+          <span class="hero-verse-ref">— 시편 119:105</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="badge-row"><span class="pill-badge">📖 날짜를 눌러 그날의 묵상을 읽어보세요</span></div>
+
+    <div class="toc-card"><ul style="list-style:none;" id="toc-list"></ul></div>
+
+    <div class="footer-links"><a href="../../index.html">&larr; 처음으로 돌아가기</a></div>
+    <div class="footer-note">청소년부 · 로마서 파헤치기</div>
+  </div>
+
+  <!-- ===== 날짜별 화면 ===== -->
+  <div id="view-day">
+    <button class="back-link" onclick="showCover()">&larr; 8월 목차로</button>
+
+    <div class="day-card">
+      <div class="day-header-row">
+        <div class="day-num-chip" id="d-num">01</div>
+        <div class="day-date-label" id="d-date">8월 1일 · 로마서 1:1-7</div>
+      </div>
+
+      <div class="audio-row">
+        <button class="audio-play-btn" id="audio-play-btn" onclick="togglePlay()"><span id="audio-play-icon">▶</span></button>
+        <div class="audio-status" id="audio-status">듣기</div>
+        <div class="audio-speed-group">
+          <button class="speed-btn is-active" data-rate="1" onclick="setRate(1)">1x</button>
+          <button class="speed-btn" data-rate="1.25" onclick="setRate(1.25)">1.25x</button>
+          <button class="speed-btn" data-rate="1.5" onclick="setRate(1.5)">1.5x</button>
+        </div>
+      </div>
+
+      <div class="day-title" id="d-theme">바울이 자기소개 하는 날 👋</div>
+      <div id="d-body"></div>
+
+      <div class="nav-row">
+        <a onclick="showCover()">&larr; 목차로</a>
+        <span id="d-nav-next">다음 (준비중)</span>
+      </div>
     </div>
   </div>
 
-  <div class="footer-note">청소년부 · 로마서 파헤치기</div>
 </div>
+
+<button class="scroll-top-btn" id="scroll-top-btn" onclick="scrollToTop()" aria-label="맨 위로"><span>↑</span></button>
+
+<script>
+const days = [
+  {n:1, date:"08.01", ref:"1:1&ndash;7", theme:"바울이 자기소개 하는 날 👋", ready:true,
+    scripture:'<span class="vnum">1</span>예수 그리스도의 종 바울은 사도로 부르심을 받아 하나님의 복음을 위하여 택정함을 입었으니 <span class="vnum">2</span>이 복음은 하나님이 선지자들을 통하여 그의 아들에 관하여 성경에 미리 약속하신 것이라 <span class="vnum">3</span>그의 아들에 관하여 말하면 육신으로는 다윗의 혈통에서 나셨고 <span class="vnum">4</span>성결의 영으로는 죽은 자들 가운데서 부활하사 능력으로 하나님의 아들로 선포되셨으니 곧 우리 주 예수 그리스도시니라 <span class="vnum">5</span>그로 말미암아 우리가 은혜와 사도의 직분을 받아 그의 이름을 위하여 모든 이방인 중에서 믿어 순종하게 하나니 <span class="vnum">6</span>너희도 그들 중에서 예수 그리스도의 것으로 부르심을 받은 자니라 <span class="vnum">7</span>로마에서 하나님의 사랑하심을 받고 성도로 부르심을 받은 모든 자에게 하나님 우리 아버지와 주 예수 그리스도로부터 은혜와 평강이 있기를 원하노라',
+    meditation:'바울은 편지 첫 줄에서 자기를 "예수님의 종"이라고 소개해. 자기소개 할 때 보통 이름, 학교, 잘하는 거 이런 걸 먼저 말하잖아? 근데 바울은 그런 거 다 빼고 "나는 예수님 거야"부터 말한 거야. 그리고 예수님이 누구신지도 짧게 설명해 — 다윗 가문에서 태어난 사람이면서 동시에 부활을 통해 하나님의 아들로 증명되신 분이라고. 바울에게는 이 소개가 세상에서 제일 중요한 정보였던 거지.',
+    application:'오늘 누가 나를 소개한다면 뭐라고 할까? SNS 프로필이나 성적, 좋아하는 아이돌 말고, 진짜 나를 설명하는 한 문장을 오늘 한번 적어보자.',
+    prayer:'하나님, 저도 바울처럼 제 정체성을 예수님 안에서 먼저 찾게 해주세요. 오늘 하루도 함께해 주세요. 예수님 이름으로 기도합니다. 아멘.'},
+  {n:2, date:"08.02", ref:"1:8&ndash;15", theme:"준비중이에요", ready:false},
+];
+
+function getWeekdayLabel(n) {
+  const labels = ['주일','월','화','수','목','금','토'];
+  const d = new Date(2026, 7, n);
+  return labels[d.getDay()];
+}
+
+function buildTOC() {
+  const list = document.getElementById('toc-list');
+  list.innerHTML = days.map(d => `
+    <li>
+      <button class="toc-item ${d.ready ? '' : 'is-disabled'}" onclick="${d.ready ? `openDay(${d.n})` : 'return false'}">
+        <div class="toc-num ${d.ready ? '' : 'gray'}">${String(d.n).padStart(2,'0')}</div>
+        <div class="toc-info">
+          <div><span class="toc-ref">롬 ${d.ref}</span><span class="toc-dow">(${getWeekdayLabel(d.n)})</span></div>
+          <div class="toc-theme">${d.theme}</div>
+        </div>
+        ${d.ready ? '<span class="toc-tag">보기</span>' : '<span class="toc-tag soon">준비중</span>'}
+        <span class="toc-arrow">${d.ready ? '›' : ''}</span>
+      </button>
+    </li>
+  `).join('');
+}
+
+function openDay(n) {
+  const d = days.find(x => x.n === n);
+  if (!d || !d.ready) return;
+  stopSpeech();
+  currentDay = d;
+  document.getElementById('d-num').textContent = String(d.n).padStart(2,'0');
+  document.getElementById('d-date').textContent = `8월 ${d.n}일 · 로마서 ${d.ref.replace(/&ndash;/,'-')}`;
+  document.getElementById('d-theme').textContent = d.theme;
+  document.getElementById('d-body').innerHTML = `
+    <div class="scripture-box">${d.scripture}</div>
+    <div class="section-block"><span class="chip chip--med">💬 묵상</span><div class="section-text">${d.meditation}</div></div>
+    <div class="section-block"><span class="chip chip--app">✅ 적용</span><div class="section-text">${d.application}</div></div>
+    <div class="section-block"><span class="chip chip--pray">🙏 기도</span><div class="section-text">${d.prayer}</div></div>
+  `;
+  const next = days.find(x => x.n === n+1);
+  document.getElementById('d-nav-next').textContent = next ? `${n+1}일차 (${next.ready ? '보기' : '준비중'})` : '마지막 날이에요';
+  document.getElementById('view-cover').style.display = 'none';
+  document.getElementById('view-day').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function showCover() {
+  stopSpeech();
+  document.getElementById('view-day').style.display = 'none';
+  document.getElementById('view-cover').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+/* TTS (음질 우선 고정) */
+let currentDay=null, currentUtterance=null, currentRate=1, isSpeaking=false, koVoiceCache=null;
+function pickBestKoreanVoice() {
+  if (koVoiceCache) return koVoiceCache;
+  const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  const ko = voices.filter(v => v.lang==='ko-KR'||v.lang==='ko_KR'||v.lang==='ko');
+  if (!ko.length) return null;
+  const ranked = ko.slice().sort((a,b)=>{
+    const isHQ = v => /neural|premium|enhanced|natural|yuna|sora|online|google/i.test(v.name);
+    const score = v => (isHQ(v)?3:0) + (!v.localService?2:0);
+    return score(b)-score(a);
+  });
+  koVoiceCache = ranked[0];
+  return koVoiceCache;
+}
+if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = () => { koVoiceCache = null; };
+
+function getSpeechText(d) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = d.scripture.replace(/<span class="vnum">\d+<\/span>/g,' ');
+  const s = tmp.textContent.replace(/\s+/g,' ').trim();
+  return `${s}. 묵상. ${d.meditation} 적용. ${d.application} 기도. ${d.prayer}`;
+}
+function updateAudioUI() {
+  const icon = document.getElementById('audio-play-icon');
+  const status = document.getElementById('audio-status');
+  if (!icon) return;
+  if (isSpeaking) { icon.textContent='❚❚'; status.textContent='듣는 중 · '+currentRate+'x'; }
+  else { icon.textContent='▶'; status.textContent='듣기'; }
+}
+function speakFromStart() {
+  if (!currentDay || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(getSpeechText(currentDay));
+  utter.lang='ko-KR'; utter.rate=currentRate;
+  const v = pickBestKoreanVoice(); if (v) utter.voice=v;
+  utter.onend=()=>{isSpeaking=false;updateAudioUI();};
+  utter.onerror=()=>{isSpeaking=false;updateAudioUI();};
+  currentUtterance=utter;
+  window.speechSynthesis.speak(utter);
+  isSpeaking=true; updateAudioUI();
+}
+function togglePlay() {
+  if (!window.speechSynthesis) { alert('이 브라우저는 음성 읽기를 지원하지 않습니다.'); return; }
+  if (isSpeaking && window.speechSynthesis.speaking && !window.speechSynthesis.paused) { window.speechSynthesis.pause(); isSpeaking=false; updateAudioUI(); return; }
+  if (window.speechSynthesis.paused) { window.speechSynthesis.resume(); isSpeaking=true; updateAudioUI(); return; }
+  speakFromStart();
+}
+function stopSpeech() { if (window.speechSynthesis) window.speechSynthesis.cancel(); isSpeaking=false; currentUtterance=null; }
+function setRate(r) {
+  currentRate=r;
+  document.querySelectorAll('.speed-btn').forEach(b=>b.classList.toggle('is-active', parseFloat(b.dataset.rate)===r));
+  if (isSpeaking || (window.speechSynthesis && window.speechSynthesis.speaking)) speakFromStart();
+  updateAudioUI();
+}
+
+/* 글씨 크기 */
+function setFontScale(scale) {
+  document.documentElement.style.setProperty('--fs-scale', scale);
+  document.querySelectorAll('.fs-btn').forEach(b=>b.classList.toggle('fs-active', parseFloat(b.dataset.scale)===scale));
+  try { localStorage.setItem('fsScaleYouth', String(scale)); } catch(e) {}
+}
+(function initFontScale(){
+  let s=null; try { s=localStorage.getItem('fsScaleYouth'); } catch(e) {}
+  if (s) {
+    document.documentElement.style.setProperty('--fs-scale', s);
+    window.addEventListener('DOMContentLoaded', ()=>{
+      document.querySelectorAll('.fs-btn').forEach(b=>b.classList.toggle('fs-active', parseFloat(b.dataset.scale)===parseFloat(s)));
+    });
+  }
+})();
+
+/* 맨 위로 */
+function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+(function initScrollTop(){
+  const btn=document.getElementById('scroll-top-btn');
+  if(!btn) return;
+  window.addEventListener('scroll', ()=>{
+    if (window.scrollY>400) btn.classList.add('is-visible'); else btn.classList.remove('is-visible');
+  });
+})();
+
+buildTOC();
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', ()=>{ navigator.serviceWorker.register('../../sw.js').catch(()=>{}); });
+}
+</script>
 </body>
 </html>
 
