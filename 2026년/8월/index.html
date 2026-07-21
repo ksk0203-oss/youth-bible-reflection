@@ -86,7 +86,7 @@ body {
 }
 .toc-card { margin-bottom: 16px; }
 .toc-item {
-  display: flex; align-items: center; gap: 8px; padding: 10px 11px; border-radius: 14px;
+  display: flex; align-items: baseline; gap: 12px; padding: 12px 12px; border-radius: 14px;
   cursor:pointer; text-decoration:none; color:inherit; width:100%; text-align:left;
   background: var(--white); border:none; font-family:inherit;
   box-shadow: 0 6px 16px rgba(124,92,255,0.22);
@@ -100,25 +100,13 @@ body {
 }
 .toc-item.is-disabled { opacity: 0.55; cursor:default; box-shadow: 0 2px 8px rgba(124,92,255,0.08); }
 .toc-item.is-disabled:hover { box-shadow: 0 2px 8px rgba(124,92,255,0.08); transform: translateY(0); }
-.toc-num {
-  flex: 0 0 28px; height: 28px; border-radius: 9px;
-  background: linear-gradient(135deg, var(--purple), var(--pink)); color: var(--white);
-  font-weight: 800; font-size: calc(11.5px * var(--fs-scale,1));
-  display: flex; align-items: center; justify-content: center;
-}
-.toc-num.gray { background: #D8D5EE; }
-.toc-date-block { flex: 0 0 auto; display: flex; flex-direction: row; align-items: center; gap: 3px; }
-.toc-date-num { font-weight: 700; font-size: calc(10.5px * var(--fs-scale,1)); color: var(--gray); white-space: nowrap; }
-.toc-dow { font-size: calc(9px * var(--fs-scale,1)); font-weight:600; color: var(--gray); opacity: 0.8; white-space: nowrap; }
-.toc-content { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; overflow: hidden; margin-left: 2px; }
-.toc-ref { flex: 0 0 auto; font-weight: 800; font-size: calc(12px * var(--fs-scale,1)); color: var(--purple); }
-.toc-theme-text {
-  flex: 1; min-width: 0; font-size: calc(12.5px * var(--fs-scale,1)); font-weight: 500; color: var(--dark);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+.toc-date-num { font-weight: 800; color: var(--purple); flex: 0 0 78px; font-size: calc(13px * var(--fs-scale,1)); }
+.toc-dow { font-size: 0.72em; font-weight:600; color: var(--gray); margin-left: 2px; }
+.toc-ref { font-weight: 700; flex: 0 0 100px; font-size: calc(13px * var(--fs-scale,1)); color: var(--dark); }
+.toc-theme-text { flex: 1; min-width: 0; font-size: calc(12.5px * var(--fs-scale,1)); font-weight: 500; color: var(--gray); }
 .toc-tag {
   flex: 0 0 auto; font-size: calc(10px * var(--fs-scale,1)); font-weight: 800; color: var(--white);
-  background: var(--purple); padding: 4px 9px; border-radius: 100px;
+  background: var(--purple); padding: 5px 10px; border-radius: 100px;
 }
 .toc-tag.soon { background: #D8D5EE; color: var(--gray); }
 .toc-arrow { flex: 0 0 auto; color: var(--purple); font-size: calc(15px * var(--fs-scale,1)); font-weight:800; width: 10px; text-align: center; }
@@ -182,18 +170,14 @@ body {
   .hero-verse { font-size: calc(13px * var(--fs-scale,1)); padding-top: 12px; margin-top: 12px; }
   .pill-badge { font-size: calc(11.5px * var(--fs-scale,1)); padding: 7px 12px; }
   .toc-card { padding: 0; }
-  .toc-item { padding: 10px 11px; border-radius: 14px; flex-wrap: wrap; row-gap: 6px; }
-  .toc-num { order: 1; }
-  .toc-date-block { order: 2; }
+  .toc-item { flex-wrap: wrap; row-gap: 6px; padding: 12px 12px; }
+  .toc-date-num { order: 1; flex-basis: 74px; font-size: calc(12.5px * var(--fs-scale,1)); }
+  .toc-ref { order: 2; flex-basis: 92px; font-size: calc(12.5px * var(--fs-scale,1)); }
   .toc-tag { order: 3; }
   .toc-arrow { order: 4; }
-  .toc-content {
-    order: 5; flex: 1 1 100%; margin-left: 0; padding-left: 36px;
-    white-space: normal;
-  }
   .toc-theme-text {
-    white-space: normal; word-break: keep-all; overflow-wrap: break-word;
-    line-height: 1.4;
+    order: 5; flex: 1 1 100%; margin-top: 2px; padding-left: 86px;
+    white-space: normal; word-break: keep-all; overflow-wrap: break-word; line-height: 1.4;
   }
   .day-card { padding: 20px 16px; border-radius: 20px; }
   .day-title { font-size: calc(18px * var(--fs-scale,1)); margin-bottom: 12px; }
@@ -446,9 +430,9 @@ function buildTOC() {
   list.innerHTML = days.map(d => `
     <li>
       <button class="toc-item ${d.ready ? '' : 'is-disabled'}" onclick="${d.ready ? `openDay(${d.n})` : 'return false'}">
-        <div class="toc-num ${d.ready ? '' : 'gray'}">${String(d.n).padStart(2,'0')}</div>
-        <div class="toc-date-block"><span class="toc-date-num">${d.date}</span><span class="toc-dow">(${getWeekdayLabel(d.n)})</span></div>
-        <div class="toc-content"><span class="toc-ref">롬 ${d.ref}</span><span class="toc-theme-text">${d.theme}</span></div>
+        <span class="toc-date-num">${d.date}<span class="toc-dow">(${getWeekdayLabel(d.n)})</span></span>
+        <span class="toc-ref">롬 ${d.ref}</span>
+        <span class="toc-theme-text">${d.theme}</span>
         ${d.ready ? '<span class="toc-tag">보기</span>' : '<span class="toc-tag soon">준비중</span>'}
         <span class="toc-arrow">${d.ready ? '›' : ''}</span>
       </button>
