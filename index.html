@@ -38,11 +38,7 @@
     </div>
   </div>
 
-  <div id="latest-container"></div>
-
-  <div class="badge-row" style="margin-top:16px;">
-    <a class="pill-badge" href="archive.html" style="text-decoration:none;">전체 목록 보러가기 →</a>
-  </div>
+  <div id="month-grid-container"></div>
 
   <div class="footer-note" style="margin-top:24px;">청소년부 · 로마서 파헤치기</div>
 </div>
@@ -52,30 +48,52 @@
 <script src="js/app.js"></script>
 <script>
 async function init() {
-  const container = document.getElementById('latest-container');
+  const container = document.getElementById('month-grid-container');
   let posts;
   try {
     posts = await loadPosts('data/posts.json');
   } catch (e) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">목록을 불러오지 못했습니다.</div></div>';
     return;
   }
-  const ready = posts.filter(p => p.ready);
-  if (!ready.length) return;
-  const latest = ready[ready.length - 1];
-  const dow = getWeekdayLabel(latest.year, latest.month, latest.day);
 
-  container.innerHTML = `
-    <div class="month-label">최신 묵상</div>
-    <div class="toc-card">
-      <a class="toc-item" href="posts/detail.html?id=${latest.id}">
-        <span class="toc-date-num">${latest.date_label}<span class="toc-dow">(${dow})</span></span>
-        <span class="toc-ref">롬 ${latest.ref}</span>
-        <span class="toc-theme-text">${latest.theme}</span>
-        <span class="toc-tag">보기</span>
-        <span class="toc-arrow">›</span>
-      </a>
-    </div>
-  `;
+  const monthKeys = [...new Set(posts.map(p => `${p.year}-${String(p.month).padStart(2,'0')}`))].sort();
+  const cardGradients = [
+    'linear-gradient(160deg, var(--purple) 0%, #5B3FD9 100%)',
+    'linear-gradient(160deg, var(--pink) 0%, var(--orange) 100%)',
+    'linear-gradient(160deg, var(--mint) 0%, #2E9E96 100%)',
+  ];
+
+  let html = '<div class="month-label">묵상 목록</div><div style="display:flex; gap:10px;">';
+  monthKeys.forEach((key, i) => {
+    const [y, m] = key.split('-');
+    const monthPosts = posts.filter(p => `${p.year}-${String(p.month).padStart(2,'0')}` === key)
+                             .sort((a,b) => a.day - b.day);
+    const first = monthPosts[0];
+    const last = monthPosts[monthPosts.length - 1];
+    const startChapVerse = first.ref.split(/[–-]/)[0];
+    const endChapVerse = last.ref.includes(':') && last.ref.split(':')[0] !== undefined
+      ? `${last.ref.split(':')[0]}:${last.ref.split(/[–-]/).pop()}`
+      : last.ref;
+    const gradient = cardGradients[i % cardGradients.length];
+
+    html += `
+      <a href="archive.html#month-${key}" style="flex:1; text-decoration:none; aspect-ratio: 3/4; display:block;">
+        <div style="background:${gradient}; border-radius:22px; padding:20px 18px; height:100%; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 8px 20px rgba(124,92,255,0.28); position:relative; overflow:hidden;">
+          <div style="position:absolute; top:-30px; right:-30px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.12);"></div>
+          <div style="position:relative; z-index:1;">
+            <div style="color:rgba(255,255,255,0.9); font-size:14px; font-weight:700;">${y}</div>
+            <div style="color:var(--white); font-size:38px; font-weight:900; line-height:1.1; margin-top:4px;">${parseInt(m)}월</div>
+          </div>
+          <div style="position:relative; z-index:1;">
+            <div style="color:rgba(255,255,255,0.95); font-size:14.5px; font-weight:700; line-height:1.6;">로마서<br>${startChapVerse} ~ ${endChapVerse}</div>
+            <div style="color:var(--white); font-size:15px; font-weight:800; margin-top:10px;">보러가기 →</div>
+          </div>
+        </div>
+      </a>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
 }
 init();
 </script>

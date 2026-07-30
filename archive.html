@@ -73,7 +73,7 @@ async function init() {
   let html = '';
   sortedKeys.forEach(key => {
     const [y, m] = key.split('-');
-    html += `<div class="month-label">${y}년 ${parseInt(m)}월</div>`;
+    html += `<div class="month-label" id="month-${key}">${y}년 ${parseInt(m)}월</div>`;
     html += '<div class="toc-card">';
     groups[key].sort((a,b) => a.day - b.day).forEach(p => {
       const dow = getWeekdayLabel(p.year, p.month, p.day);
