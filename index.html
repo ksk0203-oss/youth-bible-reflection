@@ -13,6 +13,29 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <link rel="stylesheet" href="css/style.css">
+<style>
+.month-card-row { display:flex; gap:10px; }
+.month-card { flex:1; text-decoration:none; aspect-ratio: 3/4; display:block; }
+.month-card-inner {
+  border-radius:22px; padding:20px 18px; height:100%; box-sizing:border-box;
+  display:flex; flex-direction:column; justify-content:space-between;
+  box-shadow:0 8px 20px rgba(124,92,255,0.28); position:relative; overflow:hidden;
+}
+.month-card-deco { position:absolute; top:-30px; right:-30px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.12); }
+.month-card-top, .month-card-bottom { position:relative; z-index:1; }
+.month-card-year { color:rgba(255,255,255,0.9); font-size:14px; font-weight:700; }
+.month-card-num { color:var(--white); font-size:38px; font-weight:900; line-height:1.1; margin-top:4px; }
+.month-card-range { color:rgba(255,255,255,0.95); font-size:14.5px; font-weight:700; line-height:1.6; }
+.month-card-cta { color:var(--white); font-size:15px; font-weight:800; margin-top:10px; }
+@media (max-width: 480px) {
+  .month-card-row { gap: 8px; }
+  .month-card-inner { padding: 14px 12px; border-radius: 18px; }
+  .month-card-year { font-size: 11px; }
+  .month-card-num { font-size: 26px; margin-top: 2px; }
+  .month-card-range { font-size: 11px; line-height: 1.5; }
+  .month-card-cta { font-size: 12px; margin-top: 6px; }
+}
+</style>
 </head>
 <body>
 
@@ -64,7 +87,7 @@ async function init() {
     'linear-gradient(160deg, var(--mint) 0%, #2E9E96 100%)',
   ];
 
-  let html = '<div class="month-label">묵상 목록</div><div style="display:flex; gap:10px;">';
+  let html = '<div class="month-label">묵상 목록</div><div class="month-card-row">';
   monthKeys.forEach((key, i) => {
     const [y, m] = key.split('-');
     const monthPosts = posts.filter(p => `${p.year}-${String(p.month).padStart(2,'0')}` === key)
@@ -78,16 +101,16 @@ async function init() {
     const gradient = cardGradients[i % cardGradients.length];
 
     html += `
-      <a href="archive.html?month=${key}" style="flex:1; text-decoration:none; aspect-ratio: 3/4; display:block;">
-        <div style="background:${gradient}; border-radius:22px; padding:20px 18px; height:100%; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 8px 20px rgba(124,92,255,0.28); position:relative; overflow:hidden;">
-          <div style="position:absolute; top:-30px; right:-30px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.12);"></div>
-          <div style="position:relative; z-index:1;">
-            <div style="color:rgba(255,255,255,0.9); font-size:14px; font-weight:700;">${y}</div>
-            <div style="color:var(--white); font-size:38px; font-weight:900; line-height:1.1; margin-top:4px;">${parseInt(m)}월</div>
+      <a href="archive.html?month=${key}" class="month-card">
+        <div class="month-card-inner" style="background:${gradient};">
+          <div class="month-card-deco"></div>
+          <div class="month-card-top">
+            <div class="month-card-year">${y}</div>
+            <div class="month-card-num">${parseInt(m)}월</div>
           </div>
-          <div style="position:relative; z-index:1;">
-            <div style="color:rgba(255,255,255,0.95); font-size:14.5px; font-weight:700; line-height:1.6;">로마서<br>${startChapVerse} ~ ${endChapVerse}</div>
-            <div style="color:var(--white); font-size:15px; font-weight:800; margin-top:10px;">보러가기 →</div>
+          <div class="month-card-bottom">
+            <div class="month-card-range">로마서<br>${startChapVerse} ~ ${endChapVerse}</div>
+            <div class="month-card-cta">보러가기 →</div>
           </div>
         </div>
       </a>`;
