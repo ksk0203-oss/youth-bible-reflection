@@ -2,63 +2,82 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Youth Bible Reflection</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap');
-:root {
-  --purple: #7C5CFF; --pink: #FF6B9D; --orange: #FFB648; --yellow: #FFE45E;
-  --mint: #4ECDC4; --dark: #2D2A4A; --bg: #F7F5FF; --white: #FFFFFF;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background: var(--bg); font-family: 'Noto Sans KR', sans-serif; color: var(--dark); padding: 24px 16px; }
-.wrap { max-width: 640px; margin: 0 auto; }
-.hero {
-  background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 60%, var(--orange) 100%);
-  border-radius: 28px; padding: 40px 28px; position: relative; overflow: hidden; margin-bottom: 20px;
-}
-.hero::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.15); }
-.hero::after { content:''; position:absolute; bottom:-60px; left:-30px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.1); }
-.hero-badge { display:inline-block; background:rgba(255,255,255,0.25); color:var(--white); font-size:13px; font-weight:800; padding:6px 14px; border-radius:100px; margin-bottom:14px; position:relative; z-index:1; }
-.hero-title { font-size:32px; font-weight:900; color:var(--white); line-height:1.25; position:relative; z-index:1; }
-.year-card { background: var(--white); border-radius: 24px; padding: 22px; box-shadow: 0 8px 24px rgba(124,92,255,0.1); margin-bottom: 16px; }
-.year-title { font-size: 18px; font-weight: 900; color: var(--dark); margin-bottom: 14px; }
-.month-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-.month-link {
-  flex: 1 1 auto; min-width: 90px; text-align:center; text-decoration:none;
-  background: linear-gradient(135deg, var(--purple), var(--pink)); color: var(--white);
-  font-weight: 800; font-size: 14px; padding: 14px 10px; border-radius: 16px;
-}
-.month-link.soon { background: #E8E6F5; color: #A8A5C4; }
-.footer-note { text-align: center; padding: 20px; font-size: 12px; color: #A8A5C4; }
-</style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C5CFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="청소년 묵상">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
 <div class="wrap">
+
+  <div class="fs-control" id="fs-control">
+    <span class="fs-label">글씨 크기</span>
+    <button class="fs-btn" data-scale="0.9" onclick="setFontScale(0.9)">가</button>
+    <button class="fs-btn fs-active" data-scale="1" onclick="setFontScale(1)">가</button>
+    <button class="fs-btn" data-scale="1.15" onclick="setFontScale(1.15)">가</button>
+    <button class="fs-btn" data-scale="1.3" onclick="setFontScale(1.3)">가</button>
+  </div>
+
   <div class="hero">
-    <div class="hero-badge">🔥 청소년 5분 말씀 묵상</div>
-    <div class="hero-title">Youth Bible<br>Reflection</div>
-  </div>
-
-  <div class="year-card">
-    <div class="year-title">📅 2026년</div>
-    <div class="month-grid">
-      <a class="month-link" href="2026%EB%85%84/8%EC%9B%94/index.html">8월</a>
-      <a class="month-link soon" href="2026%EB%85%84/9%EC%9B%94/index.html">9월</a>
-      <a class="month-link soon" href="2026%EB%85%84/10%EC%9B%94/index.html">10월</a>
-      <a class="month-link soon" href="2026%EB%85%84/11%EC%9B%94/index.html">11월</a>
-      <a class="month-link soon" href="2026%EB%85%84/12%EC%9B%94/index.html">12월</a>
+    <div class="hero-inner">
+      <div class="hero-badge">청소년 5분 말씀 묵상</div>
+      <div class="hero-title">로마서 파헤치기</div>
+      <div class="hero-sub">하루 5분이면 충분해요</div>
+      <div class="hero-verse">
+        "주의 말씀은 내 발에 등이요 내 길에 빛이니이다"
+        <span class="hero-verse-ref">— 시편 119:105</span>
+      </div>
     </div>
   </div>
 
-  <div class="year-card">
-    <div class="year-title">📅 2027년</div>
-    <div class="month-grid">
-      <a class="month-link soon" href="2027%EB%85%84/1%EC%9B%94/index.html">1월</a>
-    </div>
+  <div id="latest-container"></div>
+
+  <div class="badge-row" style="margin-top:16px;">
+    <a class="pill-badge" href="archive.html" style="text-decoration:none;">전체 목록 보러가기 →</a>
   </div>
 
-  <div class="footer-note">청소년부 · 로마서 파헤치기</div>
+  <div class="footer-note" style="margin-top:24px;">청소년부 · 로마서 파헤치기</div>
 </div>
+
+<button class="scroll-top-btn" id="scroll-top-btn" onclick="scrollToTop()" aria-label="맨 위로"><span>↑</span></button>
+
+<script src="js/app.js"></script>
+<script>
+async function init() {
+  const container = document.getElementById('latest-container');
+  let posts;
+  try {
+    posts = await loadPosts('data/posts.json');
+  } catch (e) {
+    return;
+  }
+  const ready = posts.filter(p => p.ready);
+  if (!ready.length) return;
+  const latest = ready[ready.length - 1];
+  const dow = getWeekdayLabel(latest.year, latest.month, latest.day);
+
+  container.innerHTML = `
+    <div class="month-label">최신 묵상</div>
+    <div class="toc-card">
+      <a class="toc-item" href="posts/detail.html?id=${latest.id}">
+        <span class="toc-date-num">${latest.date_label}<span class="toc-dow">(${dow})</span></span>
+        <span class="toc-ref">롬 ${latest.ref}</span>
+        <span class="toc-theme-text">${latest.theme}</span>
+        <span class="toc-tag">보기</span>
+        <span class="toc-arrow">›</span>
+      </a>
+    </div>
+  `;
+}
+init();
+</script>
 </body>
 </html>
