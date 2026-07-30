@@ -164,29 +164,32 @@ body {
 @media (max-width: 480px) {
   body { padding: 16px 12px; padding-top: max(48px, env(safe-area-inset-top) + 10px); }
   .hero { padding: 24px 18px; border-radius: 22px; }
-  .hero-title { font-size: calc(23px * var(--fs-scale,1)); margin-bottom: 10px; }
-  .hero-date { font-size: calc(12.5px * var(--fs-scale,1)); }
-  .hero-badge { font-size: calc(11px * var(--fs-scale,1)); padding: 5px 12px; }
-  .hero-verse { font-size: calc(13px * var(--fs-scale,1)); padding-top: 12px; margin-top: 12px; }
-  .pill-badge { font-size: calc(11.5px * var(--fs-scale,1)); padding: 7px 12px; }
+  .hero-title { font-size: calc(24px * var(--fs-scale,1)); margin-bottom: 10px; }
+  .hero-date { font-size: calc(13px * var(--fs-scale,1)); }
+  .hero-badge { font-size: calc(11.5px * var(--fs-scale,1)); padding: 5px 12px; }
+  .hero-verse { font-size: calc(13.5px * var(--fs-scale,1)); line-height: 1.7; padding-top: 12px; margin-top: 12px; }
+  .pill-badge { font-size: calc(12px * var(--fs-scale,1)); padding: 8px 13px; }
   .toc-card { padding: 0; }
-  .toc-item { flex-wrap: wrap; row-gap: 6px; padding: 12px 12px; }
-  .toc-date-num { order: 1; flex-basis: 74px; font-size: calc(12.5px * var(--fs-scale,1)); }
-  .toc-ref { order: 2; flex-basis: 92px; font-size: calc(12.5px * var(--fs-scale,1)); }
+  .toc-item { flex-wrap: wrap; row-gap: 6px; padding: 13px 12px; }
+  .toc-date-num { order: 1; flex-basis: 76px; font-size: calc(13px * var(--fs-scale,1)); }
+  .toc-ref { order: 2; flex-basis: 94px; font-size: calc(13px * var(--fs-scale,1)); }
   .toc-tag { order: 3; }
   .toc-arrow { order: 4; }
   .toc-theme-text {
-    order: 5; flex: 1 1 100%; margin-top: 2px; padding-left: 86px;
-    white-space: normal; word-break: keep-all; overflow-wrap: break-word; line-height: 1.4;
+    order: 5; flex: 1 1 100%; margin-top: 3px; padding-left: 86px;
+    white-space: normal; word-break: keep-all; overflow-wrap: break-word;
+    font-size: calc(12.5px * var(--fs-scale,1)); line-height: 1.5; color: var(--dark);
   }
-  .day-card { padding: 20px 16px; border-radius: 20px; }
-  .day-title { font-size: calc(18px * var(--fs-scale,1)); margin-bottom: 12px; }
-  .day-num-chip { width: 28px; height: 28px; font-size: calc(12px * var(--fs-scale,1)); }
-  .day-date-label { font-size: calc(11.5px * var(--fs-scale,1)); }
-  .scripture-box { padding: 16px; font-size: calc(14px * var(--fs-scale,1)); }
-  .section-text { font-size: calc(13.5px * var(--fs-scale,1)); }
+  .day-card { padding: 22px 17px; border-radius: 20px; }
+  .day-title { font-size: calc(19.5px * var(--fs-scale,1)); line-height: 1.35; margin-bottom: 14px; }
+  .day-num-chip { width: 29px; height: 29px; font-size: calc(12.5px * var(--fs-scale,1)); }
+  .day-date-label { font-size: calc(12px * var(--fs-scale,1)); }
+  .scripture-box { padding: 17px; font-size: calc(15px * var(--fs-scale,1)); line-height: 1.85; }
+  .section-text { font-size: calc(14.5px * var(--fs-scale,1)); line-height: 1.85; }
+  .chip { font-size: calc(12px * var(--fs-scale,1)); padding: 6px 12px; }
+  .section-block { margin: 20px 0; }
   .fs-control { gap: 5px; }
-  .fs-btn { width: 27px; height: 27px; }
+  .fs-btn { width: 28px; height: 28px; }
   .scroll-top-btn { width: 42px; height: 42px; right: 14px; }
 }
 </style>
